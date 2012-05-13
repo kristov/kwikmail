@@ -44,6 +44,7 @@ sub load_messages {
 
 sub send_message {
     my ( $self, $key, $action, $value ) = @_;
+    DEBUG( 'received a message - key: "%s", action: "%s"', $key, $action );
     my $map = $self->messages();
     if ( defined $map->{$key} ) {
         if ( defined $map->{$key}->{$action} ) {
@@ -53,11 +54,11 @@ sub send_message {
             }
         }
         else {
-            DEBUG( sprintf( 'could not find action "%s" for key "%s"', $action, $key ) );
+            DEBUG( 'could not find action "%s" for key "%s"', $action, $key );
         }
     }
     else {
-        DEBUG( sprintf( 'no model items set up to receive message for key "%s"', $key ) );
+        DEBUG( 'no model items set up to receive message for key "%s"', $key );
     }
 }
 

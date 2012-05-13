@@ -8,9 +8,24 @@ use base qw( KwikMail::View::Plugin );
 sub messages {
     my ( $self ) = @_;
     return {
-        subject => {
-            update => sub { $self->update_subject( @_ ) },
-        }
+        RECEIVES => {
+            subject => {
+                update => sub { $self->update_subject( @_ ) },
+            },
+        },
+        SENDS => {
+            SubjectLine => {
+                subject => {
+                    update   => sub { $self->get_subject( @_ ) },
+                    onchange => sub { $self->update_maillist( @_ ) },
+                },
+            },
+            MailBody => {
+                body => {
+                    update => sub { $self->get_body( @_ ) },
+                },
+            },
+        },
     };
 }
 
@@ -78,7 +93,6 @@ sub windows {
             {
                 id       => 'SubjectLine',
                 type     => 'TextEntry',
-                message  => 'subject',
                 ui_props => {
                     -bg => 'cyan',
                     -y  => 6,
@@ -87,7 +101,6 @@ sub windows {
             {
                 id       => 'MailBody',
                 type     => 'TextEditor',
-                message  => 'body',
                 ui_props => {
                     -bg => 'white',
                     -fg => 'black',
@@ -105,11 +118,8 @@ sub windows {
             -x        => 0,
             -y        => 1,
             -bg     => 'cyan',
-            -values   => [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
-            -labels   => {
-                1 => '(no subject)',
-                2 => '',
-            },
+            -values   => [],
+            -labels   => {},
         },
     };
 
@@ -146,6 +156,36 @@ sub windows {
     };
 
     push @{ $windows }, $main_mail_window;
+}
+
+sub update_maillist {
+    my ( $self, $curses_obj ) = @_;
+
+    DEBUG( 'foo' );
+    my $maillist = $self->view->get_object( 'NewMailList' );
+    my $subject = $curses_obj->get();
+
+    if ( !defined $self->{_active_id} ) {
+        $self->{_active_id} = 0;
+        $maillist->insert_at( 0, 0 );
+        $maillist->add_labels( { 0 => $subject } );
+        $maillist->draw();
+    }
+    else {
+        my $id = $self->{_active_id};
+        $maillist->add_labels( { $id => $subject } );
+        $maillist->draw();
+    }
+}
+
+sub get_subject {
+    my ( $self, $curses_obj ) = @_;
+    return $curses_obj->get();
+}
+
+sub get_body {
+    my ( $self, $curses_obj ) = @_;
+    return $curses_obj->get();
 }
 
 sub newmail {

@@ -17,14 +17,16 @@ my $LOGFH   = undef;
 
 sub DEBUG {
     my ( $message, @args ) = @_;
-    LOG( 'DEBUG', $message, @args );
+    my ( $package, $filename, $line, $sub ) = caller( 1 );
+    LOG( 'DEBUG', $sub, $message, @args );
 }
 
 sub LOG {
-    my ( $type, $message, @args ) = @_;
-    my $sprintf_str = "[%s] %s -- $message";
-    my $datetime = strftime( '%Y-%m-%d %H:%M:%S', localtime() );
-    my $string = sprintf( $sprintf_str, $type, $datetime, @args );
+    my ( $type, $sub, $message, @args ) = @_;
+    my $sprintf_str = "[%s] %s %s -- $message";
+    #my $datetime = strftime( '%Y-%m-%d %H:%M:%S', localtime() );
+    my $datetime = strftime( '%H:%M:%S', localtime() );
+    my $string = sprintf( $sprintf_str, $type, $datetime, $sub, @args );
     open_log() if !defined $LOGFH;
     print $LOGFH "$string\n";
     push @LOGLINES, $string;

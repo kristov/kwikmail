@@ -59,7 +59,6 @@ sub create_object {
 
     my $id       = $object->{id};
     my $type     = $object->{type};
-    my $message  = $object->{message};
     my $ui_props = $object->{ui_props};
 
     $ui_props ||= {};
@@ -77,7 +76,6 @@ sub create_object {
     }
 
     $self->{_window_obj}->{$id} = $obj;
-    $self->{_messages_out}->{$id} = $message if $message;
 
     if ( $object->{children} ) {
         for my $child_object ( @{ $object->{children} } ) {
@@ -89,7 +87,24 @@ sub create_object {
 sub onchange_handler {
     my ( $self, $id, $curses_obj ) = @_;
     $self->{_window_obj_changed}->{$id}++;
-    my $changed = $self->{_window_obj_changed}->{$id};
+
+    if ( exists $self->{_messages_send}->{$id} ) {
+        for my $key ( keys %{ $self->{_messages_send}->{$id} } ) {
+            if ( exists $self->{_messages_send}->{$id}->{$key}->{onchange} ) {
+                my $sub = $self->{_messages_send}->{$id}->{$key}->{onchange};
+                if ( $sub ) {
+                    DEBUG( 'widget "%s" was onchanged - calling "%s"', $id, $key );
+                    my $value = $sub->( $curses_obj );
+                }
+            }
+            else {
+                DEBUG( 'widget "%s", key "%s" not configured for update', $id, $key );
+            }
+        }
+    }
+    else {
+        DEBUG( 'widget "%s" not configured to send', $id );
+    }
 }
 
 sub load_base {
@@ -176,15 +191,25 @@ sub _process_changed_widget {
     my $prev_changed = $self->{_window_obj_changed}->{$id};
 
     if ( $prev_changed ) {
-        DEBUG( "widget '$id' was changed. Sending message to model" );
-        my $key = $self->{_messages_out}->{$id};
-        if ( $key ) {
-            my $curses_obj = $self->{_window_obj}->{$id};
-            my $value = $curses_obj->get();
-            $self->model->send_message( $key, 'update', $value );
+        # The last widget focussed was changed
+        if ( exists $self->{_messages_send}->{$id} ) {
+            # The last widget is set up to send a message
+            for my $key ( keys %{ $self->{_messages_send}->{$id} } ) {
+                if ( exists $self->{_messages_send}->{$id}->{$key}->{update} ) {
+                    my $sub = $self->{_messages_send}->{$id}->{$key}->{update};
+                    if ( $sub ) {
+                        DEBUG( 'widget "%s" was changed - sending "%s" update', $id, $key );
+                        my $value = $sub->( $self->get_object( $id ) );
+                        $self->model->send_message( $key, 'update', $value );
+                    }
+                }
+                else {
+                    DEBUG( 'widget "%s", key "%s" not configured for update', $id, $key );
+                }
+            }
         }
         else {
-            DEBUG( "widget '$id' not configured to send" );
+            DEBUG( 'widget "%s" not configured to send', $id );
         }
     }
 }
@@ -242,10 +267,28 @@ sub load_plugins {
 sub _load_messages {
     my ( $self, $plugin_obj ) = @_;
     if ( $plugin_obj->can( 'messages' ) ) {
+
         my $messages = $plugin_obj->messages();
-        for my $key ( keys %{ $messages } ) {
-            for my $action ( keys %{ $messages->{$key} } ) {
-                push @{ $self->{_messages}->{$key}->{$action} }, $messages->{$key}->{$action};
+
+        # Keys and their actions that are received by this plugin
+        if ( exists $messages->{RECEIVES} ) {
+            for my $key ( keys %{ $messages->{RECEIVES} } ) {
+                for my $action ( keys %{ $messages->{RECEIVES}->{$key} } ) {
+                    push @{ $self->{_messages_receive}->{$key}->{$action} }, $messages->{RECEIVES}->{$key}->{$action};
+                    DEBUG( 'added RECEIVE message "%s" action for key "%s"', $action, $key );
+                }
+            }
+        }
+
+        # Widgets, keys and their actions that send (and how to get the value they send)
+        if ( exists $messages->{SENDS} ) {
+            for my $id ( keys %{ $messages->{SENDS} } ) {
+                for my $key ( keys %{ $messages->{SENDS}->{$id} } ) {
+                    for my $action ( keys %{ $messages->{SENDS}->{$id}->{$key} } ) {
+                        $self->{_messages_send}->{$id}->{$key}->{$action} = $messages->{SENDS}->{$id}->{$key}->{$action};
+                        DEBUG( 'added SEND message "%s" action for key "%s" for widget "%s"', $action, $key, $id );
+                    }
+                }
             }
         }
     }

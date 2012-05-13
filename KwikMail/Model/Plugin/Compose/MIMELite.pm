@@ -57,7 +57,7 @@ sub _get_maybe_add_header {
 
 sub _receive_subject_update {
     my ( $self, $value ) = @_;
-    DEBUG( "updating subject to '$value'" );
+    DEBUG( 'updating subject to "%s"', $value );
 }
 
 1;
