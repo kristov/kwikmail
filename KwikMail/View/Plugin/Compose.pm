@@ -78,6 +78,7 @@ sub windows {
             {
                 id       => 'SubjectLine',
                 type     => 'TextEntry',
+                message  => 'subject',
                 ui_props => {
                     -bg => 'cyan',
                     -y  => 6,
@@ -86,6 +87,7 @@ sub windows {
             {
                 id       => 'MailBody',
                 type     => 'TextEditor',
+                message  => 'body',
                 ui_props => {
                     -bg => 'white',
                     -fg => 'black',

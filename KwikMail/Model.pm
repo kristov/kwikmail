@@ -42,12 +42,36 @@ sub load_messages {
     }
 }
 
+sub send_message {
+    my ( $self, $key, $action, $value ) = @_;
+    my $map = $self->messages();
+    if ( defined $map->{$key} ) {
+        if ( defined $map->{$key}->{$action} ) {
+            my $widgets = $map->{$key}->{$action};
+            for my $widget_callback ( @{ $widgets } ) {
+                $widget_callback->( $value );
+            }
+        }
+        else {
+            DEBUG( sprintf( 'could not find action "%s" for key "%s"', $action, $key ) );
+        }
+    }
+    else {
+        DEBUG( sprintf( 'no model items set up to receive message for key "%s"', $key ) );
+    }
+}
+
 sub main_view {
     my ( $self, $view ) = @_;
     if ( $view ) {
         $self->{_main_view} = $view;
     }
     return $self->{_main_view};
+}
+
+sub messages {
+    my ( $self ) = @_;
+    return $self->{_messages};
 }
 
 sub view {

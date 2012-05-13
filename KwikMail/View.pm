@@ -59,6 +59,7 @@ sub create_object {
 
     my $id       = $object->{id};
     my $type     = $object->{type};
+    my $message  = $object->{message};
     my $ui_props = $object->{ui_props};
 
     $ui_props ||= {};
@@ -76,6 +77,7 @@ sub create_object {
     }
 
     $self->{_window_obj}->{$id} = $obj;
+    $self->{_messages_out}->{$id} = $message if $message;
 
     if ( $object->{children} ) {
         for my $child_object ( @{ $object->{children} } ) {
@@ -85,11 +87,9 @@ sub create_object {
 }
 
 sub onchange_handler {
-    my ( $self, $id, $curses_id ) = @_;
-    my $obj = $self->{_window_obj}->{$id};
+    my ( $self, $id, $curses_obj ) = @_;
     $self->{_window_obj_changed}->{$id}++;
     my $changed = $self->{_window_obj_changed}->{$id};
-    DEBUG( "onchange handler fired $changed times for object: $id (curses id: $curses_id)" );
 }
 
 sub load_base {
@@ -147,23 +147,45 @@ sub do_tab_press {
 
     if ( exists $self->{_taborder}->{$focus} ) {
         my $taborder = $self->{_taborder}->{$focus};
+        my $prev_idx = 0;
         if ( !exists $self->{_taborder_current}->{$focus} ) {
             $self->{_taborder_current}->{$focus} = 0;
         }
         else {
+            $prev_idx = $self->{_taborder_current}->{$focus};
             $self->{_taborder_current}->{$focus}++;
             $self->{_taborder_current}->{$focus} = 0
                 if scalar( @{ $taborder } ) <= $self->{_taborder_current}->{$focus};
         }
 
-        # TODO: If the previous tabbed thing was changed, let the model know!
-        my $prev_changed = $self->{_window_obj_changed}->{$focus};
-
         my $idx = $self->{_taborder_current}->{$focus};
         my $widget_focus = $self->{_taborder}->{$focus}->[$idx];
+
+        my $prev_widget = $self->{_taborder}->{$focus}->[$prev_idx];
+        $self->_process_changed_widget( $prev_widget );
+
         DEBUG( "focusing widget at idx %s (%s)", $idx, $widget_focus );
         my $obj = $self->get_object( $widget_focus );
         $obj->focus();
+    }
+}
+
+sub _process_changed_widget {
+    my ( $self, $id ) = @_;
+
+    my $prev_changed = $self->{_window_obj_changed}->{$id};
+
+    if ( $prev_changed ) {
+        DEBUG( "widget '$id' was changed. Sending message to model" );
+        my $key = $self->{_messages_out}->{$id};
+        if ( $key ) {
+            my $curses_obj = $self->{_window_obj}->{$id};
+            my $value = $curses_obj->get();
+            $self->model->send_message( $key, 'update', $value );
+        }
+        else {
+            DEBUG( "widget '$id' not configured to send" );
+        }
     }
 }
 
@@ -209,35 +231,48 @@ sub load_plugins {
     for my $plugin ( @plugins ) {
         DEBUG( "processing VIEW plugin: $plugin" );
         my $plugin_obj = $plugin->new( $self );
-        $self->load_menus( $plugin_obj );
-        $self->load_shortcuts( $plugin_obj );
-        $self->load_windows( $plugin_obj );
-        $self->load_taborder( $plugin_obj );
+        $self->_load_messages( $plugin_obj );
+        $self->_load_menus( $plugin_obj );
+        $self->_load_shortcuts( $plugin_obj );
+        $self->_load_windows( $plugin_obj );
+        $self->_load_taborder( $plugin_obj );
     }
 }
 
-sub load_menus {
+sub _load_messages {
+    my ( $self, $plugin_obj ) = @_;
+    if ( $plugin_obj->can( 'messages' ) ) {
+        my $messages = $plugin_obj->messages();
+        for my $key ( keys %{ $messages } ) {
+            for my $action ( keys %{ $messages->{$key} } ) {
+                push @{ $self->{_messages}->{$key}->{$action} }, $messages->{$key}->{$action};
+            }
+        }
+    }
+}
+
+sub _load_menus {
     my ( $self, $plugin_obj ) = @_;
     if ( $plugin_obj->can( 'menus' ) ) {
         $plugin_obj->menus( $self->{_menus} );
     }
 }
 
-sub load_shortcuts {
+sub _load_shortcuts {
     my ( $self, $plugin_obj ) = @_;
     if ( $plugin_obj->can( 'shortcuts' ) ) {
         $plugin_obj->shortcuts( $self->{_shortcuts} );
     }
 }
 
-sub load_windows {
+sub _load_windows {
     my ( $self, $plugin_obj ) = @_;
     if ( $plugin_obj->can( 'windows' ) ) {
         $plugin_obj->windows( $self->{_windows} );
     }
 }
 
-sub load_taborder {
+sub _load_taborder {
     my ( $self, $plugin_obj ) = @_;
     if ( $plugin_obj->can( 'taborder' ) ) {
         $plugin_obj->taborder( $self->{_taborder} );
