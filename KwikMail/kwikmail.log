@@ -1,0 +1,90 @@
+[DEBUG] 2012-05-12 17:30:09 -- ---------------- START ----------------
+[DEBUG] 2012-05-12 17:30:09 -- Installing die handler
+[DEBUG] 2012-05-12 17:30:09 -- processing CONTROLLER plugin: KwikMail::Controller::Plugin::Compose
+[DEBUG] 2012-05-12 17:30:09 -- Creating View
+[DEBUG] 2012-05-12 17:30:09 -- processing VIEW plugin: KwikMail::View::Plugin::Help
+[DEBUG] 2012-05-12 17:30:09 -- processing VIEW plugin: KwikMail::View::Plugin::Compose
+[DEBUG] 2012-05-12 17:30:09 -- processing VIEW plugin: KwikMail::View::Plugin::Folder
+[DEBUG] 2012-05-12 17:30:09 -- processing VIEW plugin: KwikMail::View::Plugin::Menu
+[DEBUG] 2012-05-12 17:30:09 -- processing VIEW plugin: KwikMail::View::Plugin::Dev
+[DEBUG] 2012-05-12 17:30:09 -- Adding menu
+[DEBUG] 2012-05-12 17:30:09 -- Adding Ctrl keys
+[DEBUG] 2012-05-12 17:30:09 -- Adding objects
+[DEBUG] 2012-05-12 17:30:09 -- Creating a 'Window' with id '::main::'
+[DEBUG] 2012-05-12 17:30:09 -- Creating a 'Window' with id 'Manual'
+[DEBUG] 2012-05-12 17:30:09 -- Creating a 'Label' with id 'foo'
+[DEBUG] 2012-05-12 17:30:09 -- Creating a 'Window' with id 'NewMail'
+[DEBUG] 2012-05-12 17:30:09 -- Creating a 'Window' with id 'NewMailListWindow'
+[DEBUG] 2012-05-12 17:30:09 -- Creating a 'Label' with id 'MailListLabel'
+[DEBUG] 2012-05-12 17:30:09 -- Creating a 'Listbox' with id 'NewMailList'
+[DEBUG] 2012-05-12 17:30:09 -- Creating a 'Window' with id 'BlankNewMail'
+[DEBUG] 2012-05-12 17:30:09 -- Creating a 'Listbox' with id 'RecipientList'
+[DEBUG] 2012-05-12 17:30:09 -- Creating a 'TextEntry' with id 'SubjectLine'
+[DEBUG] 2012-05-12 17:30:09 -- Creating a 'TextEditor' with id 'MailBody'
+[DEBUG] 2012-05-12 17:30:09 -- Creating a 'Window' with id 'Log'
+[DEBUG] 2012-05-12 17:30:09 -- Creating a 'TextEditor' with id 'LogView'
+[DEBUG] 2012-05-12 17:30:09 -- done creating UI
+[DEBUG] 2012-05-12 17:30:09 -- Creating Model
+[DEBUG] 2012-05-12 17:30:09 -- processing MODEL plugin: KwikMail::Model::Plugin::Compose::MIMELite
+[DEBUG] 2012-05-12 17:30:09 -- Running View
+[DEBUG] 2012-05-12 17:30:10 -- Focus: 'NewMail'
+[DEBUG] 2012-05-12 17:30:10 -- focusing widget at idx 0 (NewMailList)
+[DEBUG] 2012-05-12 17:30:10 -- Returning widget for 'NewMailList'
+[DEBUG] 2012-05-12 17:30:11 -- processing tab press on focus 'NewMail'
+[DEBUG] 2012-05-12 17:30:11 -- focusing widget at idx 1 (RecipientList)
+[DEBUG] 2012-05-12 17:30:11 -- Returning widget for 'RecipientList'
+[DEBUG] 2012-05-12 17:30:11 -- processing tab press on focus 'NewMail'
+[DEBUG] 2012-05-12 17:30:11 -- focusing widget at idx 2 (SubjectLine)
+[DEBUG] 2012-05-12 17:30:11 -- Returning widget for 'SubjectLine'
+[DEBUG] 2012-05-12 17:30:12 -- onchange handler fired 1 times for object: SubjectLine (curses id: Curses::UI::TextEntry=HASH(0xa17cdb0))
+[DEBUG] 2012-05-12 17:30:12 -- onchange handler fired 2 times for object: SubjectLine (curses id: Curses::UI::TextEntry=HASH(0xa17cdb0))
+[DEBUG] 2012-05-12 17:30:12 -- onchange handler fired 3 times for object: SubjectLine (curses id: Curses::UI::TextEntry=HASH(0xa17cdb0))
+[DEBUG] 2012-05-12 17:30:12 -- onchange handler fired 4 times for object: SubjectLine (curses id: Curses::UI::TextEntry=HASH(0xa17cdb0))
+[DEBUG] 2012-05-12 17:30:12 -- processing tab press on focus 'NewMail'
+[DEBUG] 2012-05-12 17:30:12 -- focusing widget at idx 3 (MailBody)
+[DEBUG] 2012-05-12 17:30:12 -- Returning widget for 'MailBody'
+[DEBUG] 2012-05-12 17:30:13 -- onchange handler fired 1 times for object: MailBody (curses id: Curses::UI::TextEditor=HASH(0xa190458))
+[DEBUG] 2012-05-12 17:30:13 -- onchange handler fired 2 times for object: MailBody (curses id: Curses::UI::TextEditor=HASH(0xa190458))
+[DEBUG] 2012-05-12 17:30:13 -- onchange handler fired 3 times for object: MailBody (curses id: Curses::UI::TextEditor=HASH(0xa190458))
+[DEBUG] 2012-05-12 17:30:13 -- onchange handler fired 4 times for object: MailBody (curses id: Curses::UI::TextEditor=HASH(0xa190458))
+[DEBUG] 2012-05-12 17:30:13 -- processing tab press on focus 'NewMail'
+[DEBUG] 2012-05-12 17:30:13 -- focusing widget at idx 0 (NewMailList)
+[DEBUG] 2012-05-12 17:30:13 -- Returning widget for 'NewMailList'
+[DEBUG] 2012-05-12 17:30:18 -- Focus: 'LogView'
+[DEBUG] 2012-05-12 17:30:18 -- Returning widget for 'LogView'
+[DEBUG] 2012-05-12 17:30:18 -- onchange handler fired 1 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:18 -- onchange handler fired 2 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:19 -- onchange handler fired 3 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:19 -- onchange handler fired 4 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:19 -- onchange handler fired 5 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:19 -- onchange handler fired 6 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:19 -- onchange handler fired 7 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:20 -- onchange handler fired 8 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:20 -- onchange handler fired 9 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:20 -- onchange handler fired 10 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:20 -- onchange handler fired 11 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:20 -- onchange handler fired 12 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:20 -- onchange handler fired 13 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:20 -- onchange handler fired 14 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:20 -- onchange handler fired 15 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:20 -- onchange handler fired 16 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:22 -- onchange handler fired 17 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:22 -- onchange handler fired 18 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:22 -- onchange handler fired 19 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:22 -- onchange handler fired 20 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:22 -- onchange handler fired 21 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:22 -- onchange handler fired 22 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:22 -- onchange handler fired 23 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:22 -- onchange handler fired 24 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:23 -- onchange handler fired 25 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:23 -- onchange handler fired 26 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:23 -- onchange handler fired 27 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:23 -- onchange handler fired 28 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:24 -- onchange handler fired 29 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:24 -- onchange handler fired 30 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:24 -- onchange handler fired 31 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:24 -- onchange handler fired 32 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:24 -- onchange handler fired 33 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:24 -- onchange handler fired 34 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:24 -- onchange handler fired 35 times for object: LogView (curses id: Curses::UI::TextEditor=HASH(0xa194be8))
+[DEBUG] 2012-05-12 17:30:38 -- ----------------- END -----------------

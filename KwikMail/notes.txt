@@ -1,0 +1,12 @@
+Adding new ui elements:
+    * packages have a menu sub that receives the menu structure and can add elements
+    * packages define a window
+    * packages receive the shortcut key structure
+        * structure is a hash keyed by package name that the shortcut applies to
+        * special key '_main' applies to all windows
+        * special key 'SELF' applies to this UI element (transformed into package name)
+
+Dev notes:
+    * I have to have the View drive the Model, rather than vis-versa, because the *real*
+      controller is actually Curses::UI. In MVC the controller handles input, changes the
+      model, and a model update changes the view.
