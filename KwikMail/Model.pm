@@ -15,40 +15,55 @@ sub new {
 
 sub _init {
     my ( $self ) = @_;
-    $self->load_plugins();
+    $self->_load_plugins();
 }
 
-sub load_plugins {
+sub _load_plugins {
     my ( $self ) = @_;
 
     my @plugins = $self->plugins();
     for my $plugin ( @plugins ) {
         DEBUG( "processing MODEL plugin: $plugin" );
         my $plugin_obj = $plugin->new( $self );
-        $self->load_messages( $plugin_obj );
+        $self->_load_messages( $plugin_obj );
         $self->{_plugins}->{$plugin} = $plugin_obj;
     }
 }
 
-sub load_messages {
+sub _load_messages {
     my ( $self, $plugin_obj ) = @_;
     if ( $plugin_obj->can( 'messages' ) ) {
+
         my $messages = $plugin_obj->messages();
-        for my $key ( keys %{ $messages } ) {
-            for my $action ( keys %{ $messages->{$key} } ) {
-                push @{ $self->{_messages}->{$key}->{$action} }, $messages->{$key}->{$action};
+
+        if ( exists $messages->{RECEIVES} ) {
+            for my $key ( keys %{ $messages->{RECEIVES} } ) {
+                for my $action ( keys %{ $messages->{RECEIVES}->{$key} } ) {
+                    push @{ $self->{_messages_receive}->{$key}->{$action} }, $messages->{RECEIVES}->{$key}->{$action};
+                    DEBUG( 'added RECEIVE message "%s" action for key "%s"', $action, $key );
+                }
+            }
+        }
+
+        if ( exists $messages->{SENDS} ) {
+            for my $key ( keys %{ $messages->{SENDS} } ) {
+                for my $action ( keys %{ $messages->{SENDS}->{$key} } ) {
+                    $self->{_messages_send}->{$key}->{$action} = $messages->{SENDS}->{$key}->{$action};
+                    DEBUG( 'added SEND message "%s" action for key "%s"', $action, $key );
+                }
             }
         }
     }
 }
 
-sub send_message {
+sub receive_message {
     my ( $self, $key, $action, $value ) = @_;
     DEBUG( 'received a message - key: "%s", action: "%s"', $key, $action );
-    my $map = $self->messages();
-    if ( defined $map->{$key} ) {
-        if ( defined $map->{$key}->{$action} ) {
-            my $widgets = $map->{$key}->{$action};
+    my $messages = $self->{_messages_receive};
+
+    if ( defined $messages->{$key} ) {
+        if ( defined $messages->{$key}->{$action} ) {
+            my $widgets = $messages->{$key}->{$action};
             for my $widget_callback ( @{ $widgets } ) {
                 $widget_callback->( $value );
             }
@@ -68,11 +83,6 @@ sub main_view {
         $self->{_main_view} = $view;
     }
     return $self->{_main_view};
-}
-
-sub messages {
-    my ( $self ) = @_;
-    return $self->{_messages};
 }
 
 sub view {

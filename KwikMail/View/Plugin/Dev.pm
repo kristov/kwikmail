@@ -39,9 +39,8 @@ sub windows {
         id        => 'Log',
         type      => 'Window',
         ui_props  => {
-            -border => 1,
             -y      => 1,
-            -bfg    => 'blue',
+            -bfg    => 'white',
         },
         children  => [
             {

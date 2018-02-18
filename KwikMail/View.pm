@@ -30,9 +30,10 @@ sub build_ui {
 
     DEBUG( 'Adding menu' );
     $self->{_menu_obj} = $cui->add(
-        'menu'  => 'Menubar',
-        '-menu' => $self->{_menus},
-        '-fg'   => "blue",
+        menu  => 'Menubar',
+        -menu => $self->{_menus},
+        -fg   => 'blue',
+        -bg   => 'white',
     );
 
     $cui->set_binding( sub { $self->{_menu_obj}->focus() }, "\cX" );
@@ -88,22 +89,11 @@ sub onchange_handler {
     my ( $self, $id, $curses_obj ) = @_;
     $self->{_window_obj_changed}->{$id}++;
 
-    if ( exists $self->{_messages_send}->{$id} ) {
-        for my $key ( keys %{ $self->{_messages_send}->{$id} } ) {
-            if ( exists $self->{_messages_send}->{$id}->{$key}->{onchange} ) {
-                my $sub = $self->{_messages_send}->{$id}->{$key}->{onchange};
-                if ( $sub ) {
-                    DEBUG( 'widget "%s" was onchanged - calling "%s"', $id, $key );
-                    my $value = $sub->( $curses_obj );
-                }
-            }
-            else {
-                DEBUG( 'widget "%s", key "%s" not configured for update', $id, $key );
-            }
+    if ( exists $self->{_messages_onchange}->{$id} ) {
+        my $subs = $self->{_messages_onchange}->{$id};
+        for my $sub ( @{ $subs } ) {
+            my $value = $sub->( $curses_obj );
         }
-    }
-    else {
-        DEBUG( 'widget "%s" not configured to send', $id );
     }
 }
 
@@ -147,7 +137,7 @@ sub load_base {
         ui_props => {
             -border => 1,
             -y      => 1,
-            -bfg    => 'blue',
+            -bfg    => 'white',
         },
     };
 
@@ -200,7 +190,7 @@ sub _process_changed_widget {
                     if ( $sub ) {
                         DEBUG( 'widget "%s" was changed - sending "%s" update', $id, $key );
                         my $value = $sub->( $self->get_object( $id ) );
-                        $self->model->send_message( $key, 'update', $value );
+                        $self->model->receive_message( $key, 'update', $value );
                     }
                 }
                 else {
@@ -291,6 +281,12 @@ sub _load_messages {
                 }
             }
         }
+
+        if ( exists $messages->{ONCHANGE} ) {
+            for my $id ( keys %{ $messages->{ONCHANGE} } ) {
+                push @{ $self->{_messages_onchange}->{$id} }, $messages->{ONCHANGE}->{$id};
+            }
+        }
     }
 }
 
@@ -351,7 +347,7 @@ sub exit_dialog {
         '-message'   => "Do you really want to quit?",
         '-title'     => "Are you sure?",
         '-buttons'   => ['yes', 'no'],
-        '-bfg'       => 'blue',
+        '-fg'        => 'white',
     );
 
     exit(0) if $return;

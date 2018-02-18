@@ -16,8 +16,7 @@ sub messages {
         SENDS => {
             SubjectLine => {
                 subject => {
-                    update   => sub { $self->get_subject( @_ ) },
-                    onchange => sub { $self->update_maillist( @_ ) },
+                    update => sub { $self->get_subject( @_ ) },
                 },
             },
             MailBody => {
@@ -25,6 +24,9 @@ sub messages {
                     update => sub { $self->get_body( @_ ) },
                 },
             },
+        },
+        ONCHANGE => {
+            SubjectLine => sub { $self->update_maillist( @_ ) },
         },
     };
 }

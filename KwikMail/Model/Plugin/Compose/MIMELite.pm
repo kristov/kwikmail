@@ -8,9 +8,11 @@ use KwikMail::Logger qw( DEBUG DUMP );
 sub messages {
     my ( $self ) = @_;
     return {
-        subject => {
-            update => sub { $self->_receive_subject_update( @_ ) },
-        }
+        RECEIVES => {
+            subject => {
+                update => sub { $self->_receive_subject_update( @_ ) },
+            },
+        },
     };
 }
 

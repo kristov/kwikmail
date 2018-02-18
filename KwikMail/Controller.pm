@@ -22,7 +22,14 @@ sub _init {
 
     DEBUG( 'Installing die handler' );
     $SIG{__DIE__} = sub {
-        DEBUG( 'DIE: %s', $_[0] );
+        my $state = $^S;
+        $state = '<undef>' if !defined $state;
+        DEBUG( 'DIE: %s (state: %s)', $_[0], $state );
+        exit(1) if $state ne '<undef>';
+    };
+
+    $SIG{INT} = sub {
+        exit(0);
     };
 
     $self->load_plugins();
